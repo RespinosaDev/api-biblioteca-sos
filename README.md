@@ -1,10 +1,8 @@
 # API REST · Gestión de biblioteca
 
-Servicio web **RESTful** para gestionar los usuarios, libros y préstamos de una biblioteca. Está hecho con **Spring Boot 3**, **Spring Data JPA** y **PostgreSQL**. Incluye un sistema automático de sanciones por devoluciones fuera de plazo.
+API **REST** para gestionar los usuarios, libros y préstamos de una biblioteca, hecha con **Spring Boot 3**, **Spring Data JPA** y **PostgreSQL**. También pone sanciones automáticamente a quien devuelve un libro fuera de plazo.
 
-> 🎓 **Proyecto académico**: práctica de la asignatura *Sistemas Orientados a Servicios* (3.º del Grado en Ingeniería Informática)<br>
-> Universidad Politécnica de Madrid · Campus de Montegancedo<br>
-> 👥 Trabajo individual
+Es una práctica de la asignatura *Sistemas Orientados a Servicios* (3.º del Grado en Ingeniería Informática, Universidad Politécnica de Madrid). La hice de forma individual.
 
 ---
 
@@ -21,7 +19,7 @@ Servicio web **RESTful** para gestionar los usuarios, libros y préstamos de una
 
 ## Arquitectura
 
-Arquitectura en capas clásica:
+Tiene la típica arquitectura por capas:
 
 ```
 controller  →  service  →  repository  →  PostgreSQL
@@ -155,7 +153,7 @@ La API queda disponible en `http://localhost:8080`.
 
 Los tests usan una base de datos **H2 en memoria** (perfil `test`), así que no necesitan PostgreSQL. Cubren el flujo completo de un préstamo, las sanciones y los códigos de error.
 
-## Posibles mejoras
+## Cosas que me gustaría mejorar
 
 - Usar DTOs y Bean Validation (`@Valid`, `@NotBlank`…) en lugar de validar a mano en los servicios.
 - Añadir un mecanismo para levantar sanciones.
