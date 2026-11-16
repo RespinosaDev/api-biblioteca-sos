@@ -3,7 +3,8 @@
 Servicio web **RESTful** para gestionar los usuarios, libros y préstamos de una biblioteca. Está hecho con **Spring Boot 3**, **Spring Data JPA** y **PostgreSQL**. Incluye un sistema automático de sanciones por devoluciones fuera de plazo.
 
 > 🎓 **Proyecto académico**: práctica de la asignatura *Sistemas Orientados a Servicios* (3.º del Grado en Ingeniería Informática)<br>
-> Universidad Politécnica de Madrid · Campus de Montegancedo
+> Universidad Politécnica de Madrid · Campus de Montegancedo<br>
+> 👥 Trabajo individual
 
 ---
 
