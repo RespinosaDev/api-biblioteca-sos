@@ -1,0 +1,33 @@
+# API de biblioteca + PostgreSQL.   Uso:  docker compose up --build
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: biblioteca_db
+      POSTGRES_USER: ${DB_USERNAME:-biblioteca}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-biblioteca}
+    volumes:
+      - datos-postgres:/var/lib/postgresql/data
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d biblioteca_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/biblioteca_db
+      DB_USERNAME: ${DB_USERNAME:-biblioteca}
+      DB_PASSWORD: ${DB_PASSWORD:-biblioteca}
+      LOG_SQL: INFO
+      LOG_SQL_PARAMS: INFO
+    ports:
+      - "8080:8080"
+
+volumes:
+  datos-postgres:

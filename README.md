@@ -14,7 +14,9 @@ Es una práctica de la asignatura *Sistemas Orientados a Servicios* (3.º del Gr
 | Framework | Spring Boot 3.4 (Web, Data JPA, Validation) |
 | Persistencia | PostgreSQL + Hibernate |
 | Construcción | Maven (incluye wrapper `mvnw`) |
+| Contenedores | Docker (imagen multi-etapa) + Docker Compose con PostgreSQL |
 | Tests | JUnit 5 + MockMvc + H2 en memoria |
+| Integración continua | GitHub Actions: tests y prueba de la API desplegada en Docker |
 | Pruebas manuales | Postman |
 
 ## Arquitectura
@@ -114,7 +116,22 @@ curl -X POST http://localhost:8080/api/libros \
 curl -X POST "http://localhost:8080/api/prestamos?usuarioId=1&libroId=1"
 ```
 
-## Puesta en marcha
+## Puesta en marcha con Docker
+
+La forma más rápida: un solo comando levanta la API y una base de datos PostgreSQL ya configurada.
+
+```bash
+docker compose up --build
+```
+
+- La API queda en `http://localhost:8080` y su estado en `http://localhost:8080/actuator/health`.
+- La imagen se construye en **dos etapas**: Maven compila el `.jar` y la imagen final solo lleva el JRE y la aplicación, que se ejecuta con un usuario sin privilegios.
+- PostgreSQL guarda los datos en un volumen, así que se conservan entre reinicios. `docker compose down -v` los borra.
+- La API espera a que la base de datos esté lista (*healthcheck*) antes de arrancar.
+
+En cada *push*, **GitHub Actions** construye la imagen, levanta los dos contenedores y ejecuta [`docker/prueba-humo.sh`](docker/prueba-humo.sh). El script recorre el flujo completo (alta de usuario y de libro, préstamo, préstamo duplicado → 409, devolución, recurso inexistente → 404) contra la API real con PostgreSQL.
+
+## Puesta en marcha sin Docker
 
 ### 1. Base de datos
 
@@ -157,5 +174,5 @@ Los tests usan una base de datos **H2 en memoria** (perfil `test`), así que no 
 
 - Usar DTOs y Bean Validation (`@Valid`, `@NotBlank`…) en lugar de validar a mano en los servicios.
 - Añadir un mecanismo para levantar sanciones.
-- Tests de integración contra PostgreSQL real con Testcontainers.
+- Tests de integración contra PostgreSQL con Testcontainers (ahora el CI ya prueba la API con PostgreSQL en Docker).
 - Documentar la API con OpenAPI/Swagger.
